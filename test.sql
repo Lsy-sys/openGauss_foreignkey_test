@@ -1,8 +1,12 @@
 -- 删除所有表
-drop table students_courses;
-drop table students;
-drop table teachers;
-drop table courses;
+drop table students_courses cascade ;
+drop table students cascade ;
+drop table teachers cascade ;
+drop table courses cascade ;
+drop table instructors_courses cascade ;
+
+create schema school;
+set schema 'school';
 
 -- 创建所有表
 create table students(
@@ -71,7 +75,7 @@ insert into instructors_courses(instructor_id,course_id) values
                                                              (3,3);
 
 
-
+select * from students;
 
 -- 一、基本的增删改查操作
 insert into students(id,name,age) values (5,'Emily',24);
@@ -83,8 +87,7 @@ update students
     set age= age+1;
 
 
-select age from students
-    where id = 5;
+select name from students where age >= 22;
 
 
 
@@ -121,16 +124,29 @@ select * from students_courses
 where student_id = 1;
 
 
--- 修改外键值的影响
-UPDATE students SET id = 5 WHERE id = 1;
-select * from students_courses
-where student_id = 5;
+-- 修改外键值(主键)的影响
+UPDATE students SET id = 8 WHERE id = 2;
+
+
+select * from students_courses;
 select * from students;
 
 -- 增加主键的影响
 INSERT INTO students (id, name, age) VALUES (6, 'Emily', 24);
 
+--修改对应的外键值（外键）的影响
+delete from students_courses
+where student_id = 4;
+select * from students_courses;
 
+
+insert into students_courses values (4,1);
+
+update students_courses
+set student_id = 4
+where student_id = 2;
+
+insert into students_courses values (2,2);
 -- 三、复杂查询
 -- 查询Mr. Smith这个老师教授的所有学生
 select name from students--学生名
@@ -152,10 +168,11 @@ alter table students
 add constraint check_age
 check (age > 18);
 
+insert into  students(id,name,age) values (5,'Sam',16);
 --2.视图的创建
 create view student_view as
     select id,name from students
     where age > 20;
-
+select * from student_view;
 --3.索引的创建
 create index index_name on students(name);
